@@ -1,0 +1,14 @@
+// file_service.proto
+syntax = "proto3";
+
+service FileService {
+    rpc ProcessFile(FileRequest) returns (FileResponse);
+}
+
+message FileRequest {
+    bytes file_content = 1;
+}
+
+message FileResponse {
+    int32 rating = 1;
+}
