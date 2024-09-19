@@ -1,19 +1,19 @@
-# client.py
 import grpc
-import file_service_pb2
-import file_service_pb2_grpc
+import archive_service_pb2
+import archive_service_pb2_grpc
 
-def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
-        stub = file_service_pb2_grpc.FileServiceStub(channel)
-
-        with open('sample.zip', 'rb') as f:
-            file_content = f.read()
+async def run():
+    async with grpc.aio.insecure_channel('localhost:50051') as channel:
+        stub = archive_service_pb2_grpc.ArchiveServiceStub(channel)
         
-        request = file_service_pb2.FileRequest(file_content=file_content)
-        response = stub.ProcessFile(request)
-
-        print("File Rating: ", response.rating)
+        # Чтение zip файла
+        with open('test.zip', 'rb') as f:
+            zip_data = f.read()
+        
+        request = archive_service_pb2.ZipRequest(zip_archive=zip_data)
+        response = await stub.EvaluateZip(request)
+        print(f"Evaluation: {response.evaluation}")
 
 if __name__ == '__main__':
-    run()
+    import asyncio
+    asyncio.run(run())

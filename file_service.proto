@@ -1,14 +1,13 @@
-// file_service.proto
 syntax = "proto3";
 
-service FileService {
-    rpc ProcessFile(FileRequest) returns (FileResponse);
+service ArchiveService {
+    rpc EvaluateZip(ZipRequest) returns (EvaluationResponse);
 }
 
-message FileRequest {
-    bytes file_content = 1;
+message ZipRequest {
+    bytes zip_archive = 1;
 }
 
-message FileResponse {
-    int32 rating = 1;
+message EvaluationResponse {
+    int32 evaluation = 1;
 }
