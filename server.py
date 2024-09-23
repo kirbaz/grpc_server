@@ -1,31 +1,29 @@
 import grpc
 from concurrent import futures
+import store_pb2
+import store_pb2_grpc
 import asyncio
-import zipfile
-import io
 
-import archive_service_pb2
-import archive_service_pb2_grpc
+class StoreService(store_pb2_grpc.StoreServiceServicer):
+    async def EvaluateStore(self, request, context):
+        # Обработка запроса в зависимости от названия магазина
+        print(f"Received request for store: {request.store_name}")
+        print(f"Product files: {len(request.product_files)} files received.")
 
-class ArchiveServiceServicer(archive_service_pb2_grpc.ArchiveServiceServicer):
-    async def EvaluateZip(self, request, context):
-        zip_archive = request.zip_archive
-        
-        # Проверяем переданный zip файл
-        with zipfile.ZipFile(io.BytesIO(zip_archive), 'r') as zip_ref:
-            if any(info.file_size > 0 for info in zip_ref.infolist()):
-                evaluation = 1
-            else:
-                evaluation = 0
-        
-        return archive_service_pb2.EvaluationResponse(evaluation=evaluation)
+        # Пример логики оценки
+        if request.store_name == "example_store":
+            evaluation = 1  # Оценка 1 для example_store
+        else:
+            evaluation = 0  # Оценка 0 для других магазинов
+
+        return store_pb2.StoreResponse(evaluation=evaluation)
 
 async def serve():
     server = grpc.aio.server()
-    archive_service_pb2_grpc.add_ArchiveServiceServicer_to_server(ArchiveServiceServicer(), server)
+    store_pb2_grpc.add_StoreServiceServicer_to_server(StoreService(), server)
     server.add_insecure_port('[::]:50051')
-    print('Starting server on port 50051...')
     await server.start()
+    print("Server started on port 50051.")
     await server.wait_for_termination()
 
 if __name__ == '__main__':

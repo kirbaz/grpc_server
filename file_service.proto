@@ -1,13 +1,19 @@
 syntax = "proto3";
 
-service ArchiveService {
-    rpc EvaluateZip(ZipRequest) returns (EvaluationResponse);
+package store;
+
+// Сообщение для передачи данных о магазине и товарах
+message StoreRequest {
+    string store_name = 1; // Название магазина
+    repeated bytes product_files = 2; // Массив файлов описания товара в байтовом формате
 }
 
-message ZipRequest {
-    bytes zip_archive = 1;
+// Сообщение для ответа от сервера
+message StoreResponse {
+    int32 evaluation = 1; // Оценка (0 или 1)
 }
 
-message EvaluationResponse {
-    int32 evaluation = 1;
+// Определение сервиса
+service StoreService {
+    rpc EvaluateStore(StoreRequest) returns (StoreResponse);
 }
