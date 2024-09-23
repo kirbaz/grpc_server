@@ -6,17 +6,32 @@ import asyncio
 
 class StoreService(store_pb2_grpc.StoreServiceServicer):
     async def EvaluateStore(self, request, context):
-        # Обработка запроса в зависимости от названия магазина
-        print(f"Received request for store: {request.store_name}")
-        print(f"Product files: {len(request.product_files)} files received.")
+     store_name = request.store_name  # Получаем название магазина
+     product_files = request.product_files  # Получаем массив файлов
 
-        # Пример логики оценки
-        if request.store_name == "example_store":
-            evaluation = 1  # Оценка 1 для example_store
-        else:
-            evaluation = 0  # Оценка 0 для других магазинов
+     print(f"Received request for store: {store_name}")
+     print(f"Product files: {len(product_files)} files received.")
 
-        return store_pb2.StoreResponse(evaluation=evaluation)
+     with tempfile.TemporaryDirectory() as temp_dir:
+        for product_file in product_files:
+            file_data = product_file.file_data
+            file_name = product_file.file_name
+
+            # Сохранение файла с оригинальным именем
+            file_path = os.path.join(temp_dir, file_name)
+            with open(file_path, 'wb') as f:
+                f.write(file_data)
+
+            # Чтение и обработка файла
+            with open(file_path, 'rb') as f:
+                content = f.read()
+                print(f"Content of {file_path}:")
+                print(content)  # Здесь вы можете добавить свою логику обработки
+
+    # Пример логики оценки
+    evaluation = 1 if store_name == "example_store" else 0
+    return store_pb2.StoreResponse(evaluation=evaluation)
+
 
 async def serve():
     server = grpc.aio.server()

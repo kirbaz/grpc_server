@@ -5,15 +5,16 @@ import asyncio
 import sys
 import time
 
+
 class StoreClient:
     def __init__(self):
         self.store_name = "example_store"  # Название магазина
         self.product_files = []  # Список для накопления файлов
 
-    def add_product_file(self, file_data):
-        """Добавляет файл в список."""
-        self.product_files.append(file_data)
-        print(f"Added file of size: {len(file_data)} bytes")
+    def add_product_file(self, file_data, file_name):
+        """Добавляет файл в список с его названием."""
+        self.product_files.append(store_pb2.ProductFile(file_data=file_data, file_name=file_name))
+        print(f"Added file: {file_name}, size: {len(file_data)} bytes")
 
     async def evaluate_store(self):
         """Отправляет накопленные файлы на сервер и получает оценку."""
@@ -33,6 +34,7 @@ class StoreClient:
 
             # Очистка списка после отправки
             self.product_files.clear()
+
 
     async def input_files(self):
         """Асинхронный ввод файлов."""
