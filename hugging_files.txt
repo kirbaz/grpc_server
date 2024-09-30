@@ -1,0 +1,2 @@
+Возьмите ссылки на веса модели и конфигурационные файлы (config.json, pytorch_model.bin, tokenizer_config.json, vocab.txt).
+https://huggingface.co/bert-base-multilingual-cased
