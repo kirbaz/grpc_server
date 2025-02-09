@@ -1,0 +1,3 @@
+https://github.com/upx/upx/releases
+Чтобы использовать UPX из командной строки без указания полного пути, добавьте папку с upx.exe в переменную окружения PATH.
+pyinstaller --onefile --noconsole my_bot.py
